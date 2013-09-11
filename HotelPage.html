@@ -1,0 +1,721 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="content/css/main.css">
+  </head>
+  <body>
+  	<h1>
+    Omni Hotel & Resort Atlanta
+    </h1>
+  	  
+    <div id="container"></div>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="http://code.jquery.com/jquery-migrate-1.1.1.min.js"></script>
+	<script src="content/js/jquery.qtip-1.0.0-rc3.min.js"></script>
+	<script src="content/js/KineticJS.js"></script>
+    <script src="content/js/Floor1.js"></script>
+    <script src="content/js/Floor2.js"></script>
+    <script src="content/js/Floor3.js"></script>
+	<script src="content/js/floors/NorthTower/Floor1.js"></script>
+	<script src="content/js/floors/NorthTower/Floor2.js"></script>
+	<script src="content/js/floors/NorthTower/Floor3.js"></script>
+	<script src="content/js/floors/NorthTower/Floor4.js"></script>
+	<script src="content/js/floors/NorthTower/Floor5.js"></script>
+    <script src="content/js/floors/NorthTower/NT_SelectFloor.js"></script>
+	<script src="content/js/floors/NorthTower/AtriumTerrace.js"></script>
+	<script src="content/js/rooms/NorthTower/M1_Cottonwood.js"></script>
+    <script src="content/js/rooms/NorthTower/M1_Dogwood.js"></script>
+    <script src="content/js/rooms/NorthTower/M2_InternationalBallroom.js"></script>
+    <script src="content/js/rooms/NorthTower/M4_GrandBallroom.js"></script>
+    <script src="content/js/rooms/NorthTower/M4_GrandBallroomD.js"></script>
+    <script src="content/js/floors/SouthTower/ExhibitHall.js"></script>
+    <script src="content/js/floors/SouthTower/CNNConferenceCenter.js"></script>
+    <script src="content/js/floors/SouthTower/AtriumTerrace.js"></script>
+    <script src="content/js/floors/SouthTower/HotelLobby.js"></script>
+    <script src="content/js/floors/SouthTower/ST_SelectFloor.js"></script>
+    <script src="content/js/rooms/SouthTower/Atrium_AtriumTerrace.js"></script>
+    <script src="content/js/rooms/SouthTower/Atrium_MapleRoom.js"></script>
+    
+    <script src="content/js/Overview.js"></script>
+    <script src="content/js/OuterBuilding.js"></script>
+	<script type="text/javascript">		
+		//Create a stage
+	    var stage = new Kinetic.Stage({
+        container: 'container',
+        width: 1000,
+        height: 675
+		});	
+		const Overview = -3;
+		const OuterBuilding = -2;
+		const NFloorScreen = -1;
+		const SFloorScreen = 0;
+		const NTFloor1 = 1;
+		const NTFloor2 = 2;
+		const NTFloor3 = 3;
+		const NTFloor4 = 4;
+		const NTFloor5 = 5;
+		const NTInd1 = 6;
+		const NTInd2 = 7;
+		const NTInd3 = 8;
+		const NTInd4 = 9;
+		const NTIndInside = 10;
+		const STFloor1 = 11;
+		const STFloor2 = 12;
+		const STFloor3 = 13;
+		const STFloor4 = 14;
+		const STInd1 = 15;
+		const STInd2 = 16;
+		
+		//create info table
+			var tableLayer = new Kinetic.Layer();
+			//header
+			var tableHeader = new Kinetic.Text();
+			//box
+			var tableRect = new Kinetic.Rect();
+			//box hightlight
+			var tableHighlightRect = new Kinetic.Rect();
+			//field labels
+			var roomTypeLabel = new Kinetic.Text();
+			var roomSizeLabel = new Kinetic.Text();
+			var roomReceptionLabel = new Kinetic.Text();
+			var roomDimensionLabel = new Kinetic.Text();
+			var roomCeilingHeightLabel = new Kinetic.Text();
+			var roomTheaterLabel = new Kinetic.Text();
+			//fields
+			var roomType = new Kinetic.Text();
+			var roomSize = new Kinetic.Text();
+			var roomReception = new Kinetic.Text();
+			var roomDimension = new Kinetic.Text();
+			var roomCeilingHeight = new Kinetic.Text();
+			var roomTheater = new Kinetic.Text();
+			
+			//add to layer			
+			tableLayer.add(tableRect);
+			tableLayer.add(tableHighlightRect);
+			
+			tableLayer.add(tableHeader);
+		
+			tableLayer.add(roomTypeLabel);
+			tableLayer.add(roomSizeLabel);
+			tableLayer.add(roomReceptionLabel);
+			tableLayer.add(roomDimensionLabel);
+			tableLayer.add(roomCeilingHeightLabel);
+			tableLayer.add(roomTheaterLabel);
+			
+			tableLayer.add(roomType);
+			tableLayer.add(roomSize);
+			tableLayer.add(roomReception);
+			tableLayer.add(roomDimension);
+			tableLayer.add(roomCeilingHeight);
+			tableLayer.add(roomTheater);
+		//end info table
+		/*
+		var rect = new Kinetic.Rect({
+					x: 239,
+					y: 75,
+					width: 100,
+					height: 50,
+					fill: 'green',
+					stroke: 'black',
+					strokeWidth: 4
+		});
+		rect.on('click', function(evt) {				
+				change_state(1,1);
+		});
+		rect.on('mouseover', function(evt) {
+			stage.remove(tableLayer);
+			changeRoomInformation();
+			stage.add(tableLayer);
+		});*/
+		//backLayer.add(rect);
+		
+			//create tooltips 
+			var tooltipLayer = new Kinetic.Layer();
+			var tooltipshapeLayer = new Kinetic.Layer();
+			
+			var tooltip = new Kinetic.Text({
+				text: "",
+				fontFamily: "Calibri",
+				fontSize: 20,
+				padding: 5,
+				fill: "white",
+				alpha: 0.75,
+				visible: false,
+				//fontStyle: "Bold",
+				//shadowColor: "white",
+				align: "center"
+				});
+			tooltipLayer.add(tooltip);
+			
+			      var tooltipshape = new Kinetic.Rect({
+					width: 100,
+					height: 50,
+					fill: 'black',
+					visible: false
+				  });
+			
+			tooltipshapeLayer.add(tooltipshape);
+			
+			//end toolstips
+					
+		function change_state(newState,prevState) 
+		{
+			//stage.remove(shapeLayer);
+			//doThis();
+			stage.reset();
+			shapeLayer = new Kinetic.Layer();
+			drawInfoTable();
+			switch(newState)
+			{
+				case Overview: 
+					overview(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case OuterBuilding:
+					outerBuilding(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break; 
+				case NFloorScreen:
+					NT_SelectFloor(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case SFloorScreen:
+					ST_SelectFloor(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTFloor1:
+					NT_Floor1(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTFloor2:
+					NT_Floor2(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTFloor3:
+					NT_Floor3(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTFloor4:
+					NT_Floor4(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTFloor5:
+					NT_Floor5(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTInd1:
+					NT_M1_DogwoodAB(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTInd2:
+					NT_M1_CottonwoodAB(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTInd3:
+					NT_M2_InternationalBallroom(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTInd4:
+					NT_M4_Grandballroom(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case NTIndInside:
+					NT_M4_Grandballroom_D(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case STFloor1:
+					ST_ExhibitHall(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case STFloor2:
+					ST_CNNConferenceCenter(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case STFloor3:
+					ST_HotelLobbyLevel(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case STFloor4:
+					ST_AtriumTerraceLevel(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case STInd2:
+					ST_AtriumTerrace(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+				case STInd1:
+					ST_MapleRoom(prevState);
+					stage.add(tooltipshapeLayer);
+					stage.add(tooltipLayer);
+					stage.add(tableLayer);
+					break;
+			}
+			tableLayer.moveToTop();
+			tableLayer.draw();
+			changeBack(prevState,newState);
+			goHome();
+		}
+
+		function goHome(){
+			var homeLayer = new Kinetic.Layer();
+			
+			 var homeRect = new Kinetic.Rect({
+				x: stage.getWidth()*0.8 -40 ,
+				y: 340,
+				width: 200,
+				height: 50,
+				fill: 'green',
+				stroke: 'black',
+				strokeWidth: 2,
+				opacity: 1,
+			  });
+			  homeRect.setCornerRadius(10);
+			  homeRect.setFill('#758ba0');
+				
+			var homeText = new Kinetic.Text({
+			x: stage.getWidth()*0.8 -40 + 15,
+			y:  355,
+			text: '← Go to Home',
+			fontSize: 20,
+			fontFamily: 'Times New Roman',
+			fill: 'black'
+		  });
+
+			
+			homeRect.on('mouseover',function(){
+				document.body.style.cursor = 'pointer';
+				this.transitionTo({
+	     
+	  
+		          opacity: .5,
+		          duration: .5,
+		        });
+			});
+			homeRect.on('mouseout',function(){
+				document.body.style.cursor = 'default';
+				this.transitionTo({
+	     
+	  
+		          opacity: 1,
+		          duration: .35,
+		        });
+			});
+			homeRect.on('click', function(evt) {
+				document.body.style.cursor = 'default';
+				change_state(OuterBuilding,1);
+			});
+			homeLayer.add(homeRect);
+			homeLayer.add(homeText);
+			stage.add(homeLayer);
+		}
+
+		
+		function changeBack(prevState,currentState){
+			
+			var backLayer = new Kinetic.Layer();
+			
+			 var ciry = new Kinetic.Rect({
+				x: stage.getWidth()*0.8 -40 ,
+				y: 270,
+				width: 200,
+				height: 50,
+				fill: 'green',
+				stroke: 'black',
+				strokeWidth: 2,
+				opacity: 1,
+			  });
+			  ciry.setCornerRadius(10);
+			  ciry.setFill('#758ba0');
+				
+			var backText = new Kinetic.Text({
+			x: stage.getWidth()*0.8 -40 + 15,
+			y:  285,
+			text: '← Back to Previous',
+			fontSize: 20,
+			fontFamily: 'Times New Roman',
+			fill: 'black'
+		  });
+		  
+			  backText.on('click', function(evt) {
+					document.body.style.cursor = 'default';
+					change_state(thing,1);
+				});
+			var thing = 0;
+			switch(currentState)
+			{
+				case Overview:
+					thing = OuterBuilding;
+					break;
+				case OuterBuilding:
+					thing = NFloorScreen;
+					break; 
+				case NFloorScreen:
+				case SFloorScreen:
+					thing = OuterBuilding;
+					break;
+				case NTFloor1:
+				case NTFloor2:
+				case NTFloor3:
+				case NTFloor4:
+				case NTFloor5:
+					thing = NFloorScreen;
+					break;
+				case NTInd1:
+					thing = NTFloor1;
+					break;
+				case NTInd2:
+					thing = NTFloor1;
+					break;
+				case NTInd3:
+					thing = NTFloor2;
+					break;
+				case NTInd4:
+					thing = NTFloor4;
+					break;
+				case NTIndInside:
+					thing = NTInd4;
+					break;
+				case STFloor1:
+				case STFloor2:
+				case STFloor3:
+				case STFloor4:
+					thing = SFloorScreen;
+					break;
+				case STInd1:
+					thing = STFloor4;
+					break;
+				case STInd2:
+					thing = STFloor4;
+					break;
+			}
+			ciry.on('mouseover',function(){
+				document.body.style.cursor = 'pointer';
+				this.transitionTo({
+	     
+	  
+		          opacity: .5,
+		          duration: .5,
+		        });
+			});
+			ciry.on('mouseout',function(){
+				document.body.style.cursor = 'default';
+				this.transitionTo({
+	     
+	  
+		          opacity: 1,
+		          duration: .35,
+		        });
+			});
+			ciry.on('click', function(evt) {
+				document.body.style.cursor = 'default';
+				change_state(thing,1);
+			});
+			backLayer.add(ciry);
+			backLayer.add(backText);
+			stage.add(backLayer);
+			
+			
+			
+			/*
+			backLayer = new Kinetic.Layer();
+			var rect = new Kinetic.Rect({
+					x: screen.width/2 - 50,
+					y: screen.height - 55,
+					width: 100,
+					height: 50,
+					fill: 'green',
+					stroke: 'black',
+					strokeWidth: 4
+			});
+			var thing = 0;
+			/*
+			switch(currentState)
+			{
+				case OuterBuilding:
+					//temporary variable till actual artwork in place
+					thing = NFloorScreen;
+					break; 
+				case NFloorScreen:
+				case SFloorScreen:
+					thing = OuterBuilding;
+					break;
+				case NTFloor1:
+				case NTFloor2:
+				case NTFloor3:
+				case NTFloor4:
+				case NTFloor5:
+					thing = NFloorScreen;
+					break;
+				case NTInd1:
+					thing = NTFloor1;
+					break;
+				case NTInd2:
+					thing = NTFloor1;
+					break;
+				case NTInd3:
+					thing = NTFloor3;
+					break;
+				case NTInd4:
+					thing = NTFloor4;
+					break;
+				case NTIndInside:
+					thing = NTInd4;
+					break;
+				case STFloor1:
+				case STFloor2:
+				case STFloor3:
+				case STFloor4:
+					thing = SFloorScreen;
+					break;
+				case STInd1:
+					thing = STFloor1;
+					break;
+				case STInd2:
+					thing = STFloor2;
+					break;
+			}
+			
+			rect.on('mouseover', function() {
+				//stage.clear());
+				changeRoomInformation();
+				stage.add(tableLayer);
+				//stage.add(backLayer);
+				//stage.add(shapeLayer);
+			});
+			
+			rect.on('click', function(evt) {			
+				change_state(NFloor1,currentState);
+			});
+			backLayer.add(rect);
+			stage.add(backLayer);
+			
+			*/
+			
+		
+		}
+
+	
+		function drawInfoTable() {
+			//table background
+			tableRect.setX(stage.getWidth()*0.8 -40 );
+			tableRect.setY(20);
+			tableRect.setStroke('#555');
+			tableRect.setStrokeWidth(2);
+			tableRect.setFill('#ddd');
+			tableRect.setWidth(stage.getWidth()*0.15 + 50);
+			tableRect.setHeight(230);
+			tableRect.setShadowColor('black');
+			tableRect.setShadowBlur(10);
+			tableRect.setShadowOffset([10, 10]);
+			tableRect.setShadowOpacity(0.2);
+			tableRect.setCornerRadius(10);
+			tableRect.show();
+			
+			//tableHighlightRect
+			tableHighlightRect.setX(stage.getWidth()*0.8 -40 );
+			tableHighlightRect.setY(20);
+			tableHighlightRect.setFill('#758ba0');
+			tableHighlightRect.setStroke('#555');
+			tableHighlightRect.setStrokeWidth(2);
+			tableHighlightRect.setWidth(stage.getWidth()*0.15 + 50);
+			tableHighlightRect.setHeight(30);
+			tableHighlightRect.setCornerRadius(10);
+			tableHighlightRect.show();
+			
+			//table header
+			tableHeader.setX(stage.getWidth()*0.8- 20);
+			tableHeader.setY(20);
+			tableHeader.setText('Information');
+			tableHeader.setFontSize(20);
+			tableHeader.setFontFamily('Times New Roman');
+			tableHeader.setFill('black');
+			tableHeader.setWidth(stage.getWidth()*0.15);
+			tableHeader.setPadding(5);
+			tableHeader.setAlign('center');
+			tableHeader.show();
+			//end table header
+			
+			//begin field labels
+			roomTypeLabel.setX(stage.getWidth()*0.8- 40);
+			roomTypeLabel.setY(55);
+			roomTypeLabel.setText('Room:');
+			roomTypeLabel.setFontSize(18);
+			roomTypeLabel.setFontFamily('Times New Roman');
+			roomTypeLabel.setFill('#555');
+			roomTypeLabel.setWidth(stage.getWidth()*0.15);
+			roomTypeLabel.setPadding(5);
+			roomTypeLabel.setAlign('left');
+			roomTypeLabel.show();
+			
+			roomSizeLabel.setX(stage.getWidth()*0.8- 40);
+			roomSizeLabel.setY(85);
+			roomSizeLabel.setText('Size:');
+			roomSizeLabel.setFontSize(18);
+			roomSizeLabel.setFontFamily('Times New Roman');
+			roomSizeLabel.setFill('#555');
+			roomSizeLabel.setWidth(stage.getWidth()*0.15);
+			roomSizeLabel.setPadding(5);
+			roomSizeLabel.setAlign('left');
+			roomSizeLabel.show();
+			
+			roomDimensionLabel.setX(stage.getWidth()*0.8- 40);
+			roomDimensionLabel.setY(115);
+			roomDimensionLabel.setText('Dimension:');
+			roomDimensionLabel.setFontSize(18);
+			roomDimensionLabel.setFontFamily('Times New Roman');
+			roomDimensionLabel.setFill('#555');
+			roomDimensionLabel.setWidth(stage.getWidth()*0.15);
+			roomDimensionLabel.setPadding(5);
+			roomDimensionLabel.setAlign('left');
+			roomDimensionLabel.show();
+			
+			roomCeilingHeightLabel.setX(stage.getWidth()*0.8- 40);
+			roomCeilingHeightLabel.setY(145);
+			roomCeilingHeightLabel.setText('Ceiling Height:');
+			roomCeilingHeightLabel.setFontSize(18);
+			roomCeilingHeightLabel.setFontFamily('Times New Roman');
+			roomCeilingHeightLabel.setFill('#555');
+			roomCeilingHeightLabel.setWidth(stage.getWidth()*0.15);
+			roomCeilingHeightLabel.setPadding(5);
+			roomCeilingHeightLabel.setAlign('left');
+			roomCeilingHeightLabel.show();
+			
+			roomTheaterLabel.setX(stage.getWidth()*0.8- 40);
+			roomTheaterLabel.setY(175);
+			roomTheaterLabel.setText('Theater Capacity:');
+			roomTheaterLabel.setFontSize(18);
+			roomTheaterLabel.setFontFamily('Times New Roman');
+			roomTheaterLabel.setFill('#555');
+			roomTheaterLabel.setWidth(stage.getWidth()*0.15);
+			roomTheaterLabel.setPadding(5);
+			roomTheaterLabel.setAlign('left');
+			roomTheaterLabel.show();
+			
+			roomReceptionLabel.setX(stage.getWidth()*0.8- 40);
+			roomReceptionLabel.setY(205);
+			roomReceptionLabel.setText('Reception Capacity:');
+			roomReceptionLabel.setFontSize(17);
+			roomReceptionLabel.setFontFamily('Times New Roman');
+			roomReceptionLabel.setFill('#555');
+			roomReceptionLabel.setWidth(stage.getWidth()*0.15);
+			roomReceptionLabel.setPadding(5);
+			roomReceptionLabel.setAlign('left');
+			roomReceptionLabel.show();
+			//end field labels
+			
+			//begin fields
+			roomType.setX(stage.getWidth()*0.8 +5);
+			roomType.setY(55);
+			roomType.setText('-');
+			roomType.setFontSize(14);
+			roomType.setFontFamily('Times New Roman');
+			roomType.setFill('#555');
+			roomType.setWidth(stage.getWidth()*0.15);
+			roomType.setPadding(5);
+			roomType.setAlign('right');
+			
+			roomSize.setX(stage.getWidth()*0.8+5);
+			roomSize.setY(85);
+			roomSize.setText('-');
+			roomSize.setFontSize(14);
+			roomSize.setFontFamily('Times New Roman');
+			roomSize.setFill('#555');
+			roomSize.setWidth(stage.getWidth()*0.15);
+			roomSize.setPadding(5);
+			roomSize.setAlign('right');
+			
+			roomDimension.setX(stage.getWidth()*0.8+5);
+			roomDimension.setY(115);
+			roomDimension.setText('-');
+			roomDimension.setFontSize(14);
+			roomDimension.setFontFamily('Times New Roman');
+			roomDimension.setFill('#555');
+			roomDimension.setWidth(stage.getWidth()*0.15);
+			roomDimension.setPadding(5);
+			roomDimension.setAlign('right');
+			
+			roomCeilingHeight.setX(stage.getWidth()*0.8+5);
+			roomCeilingHeight.setY(145);
+			roomCeilingHeight.setText('-');
+			roomCeilingHeight.setFontSize(14);
+			roomCeilingHeight.setFontFamily('Times New Roman');
+			roomCeilingHeight.setFill('#555');
+			roomCeilingHeight.setWidth(stage.getWidth()*0.15);
+			roomCeilingHeight.setPadding(5);
+			roomCeilingHeight.setAlign('right');
+			
+			roomTheater.setX(stage.getWidth()*0.8+5);
+			roomTheater.setY(175);
+			roomTheater.setText('-');
+			roomTheater.setFontSize(14);
+			roomTheater.setFontFamily('Times New Roman');
+			roomTheater.setFill('#555');
+			roomTheater.setWidth(stage.getWidth()*0.15);
+			roomTheater.setPadding(5);
+			roomTheater.setAlign('right');			
+			
+			roomReception.setX(stage.getWidth()*0.8+5);
+			roomReception.setY(205);
+			roomReception.setText('-');
+			roomReception.setFontSize(14);
+			roomReception.setFontFamily('Times New Roman');
+			roomReception.setFill('#555');
+			roomReception.setWidth(stage.getWidth()*0.15);
+			roomReception.setPadding(5);
+			roomReception.setAlign('right');
+			roomReception.show();
+			//end fields
+
+			tableLayer.draw();
+		}
+		
+		change_state(OuterBuilding,-2);
+
+	</script>
+  </body>
+</html>
